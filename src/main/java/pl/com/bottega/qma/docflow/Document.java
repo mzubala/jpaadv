@@ -20,6 +20,7 @@ public class Document {
   }
 
   public Document(String number, Long creatorId) {
+    this.number = number;
     documentStatus = DocumentStatus.DRAFT;
   }
 
