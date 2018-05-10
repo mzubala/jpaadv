@@ -1,4 +1,5 @@
 package pl.com.bottega.qma.core.events;
 
-public class Event {
+public interface Event {
+
 }

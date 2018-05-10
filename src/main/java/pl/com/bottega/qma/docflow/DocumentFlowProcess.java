@@ -1,5 +1,6 @@
 package pl.com.bottega.qma.docflow;
 
+import pl.com.bottega.qma.core.events.EventPublisher;
 import pl.com.bottega.qma.docflow.commands.*;
 
 import javax.transaction.Transactional;
@@ -9,15 +10,20 @@ public class DocumentFlowProcess {
 
   private final DocumentRepository documentRepository;
   private final NumberGenerator numberGenerator;
+  private final EventPublisher eventPublisher;
 
-  public DocumentFlowProcess(DocumentRepository documentRepository, NumberGenerator numberGenerator) {
+  public DocumentFlowProcess(DocumentRepository documentRepository,
+                             NumberGenerator numberGenerator,
+                             EventPublisher eventPublisher
+                             ) {
     this.documentRepository = documentRepository;
     this.numberGenerator = numberGenerator;
+    this.eventPublisher = eventPublisher;
   }
 
   public String create(CreateDocumentCommand cmd) {
     String number = numberGenerator.generate();
-    Document document = new Document(number, cmd.creatorId);
+    Document document = new Document(number, cmd.creatorId, eventPublisher);
     documentRepository.save(document);
     return number;
   }
@@ -29,15 +35,21 @@ public class DocumentFlowProcess {
   }
 
   public void verify(VerifyDocumentCommand cmd) {
-
+    Document document = documentRepository.get(cmd.documentNumber);
+    document.verify(cmd);
+    documentRepository.save(document);
   }
 
   public void publish(PublishDocumentCommand cmd) {
-
+    Document document = documentRepository.get(cmd.documentNumber);
+    document.publish(cmd);
+    documentRepository.save(document);
   }
 
   public void archive(ArchiveDocumentCommand cmd) {
-
+    Document document = documentRepository.get(cmd.documentNumber);
+    document.archive(cmd);
+    documentRepository.save(document);
   }
 
 }
