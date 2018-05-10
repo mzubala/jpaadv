@@ -1,4 +1,7 @@
 target
 .idea
 *.iml
+*
 db
+*.ipr
+*.iws
