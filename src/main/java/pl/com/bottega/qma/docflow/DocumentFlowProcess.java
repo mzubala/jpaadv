@@ -14,7 +14,7 @@ public class DocumentFlowProcess {
 
   public String create(CreateDocumentCommand cmd) {
     String number = numberGenerator.generate();
-    Document document = new Document(number);
+    Document document = new Document(number, cmd.creatorId);
     documentRepository.save(document);
     return number;
   }
