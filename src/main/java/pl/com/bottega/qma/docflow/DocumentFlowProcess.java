@@ -2,6 +2,9 @@ package pl.com.bottega.qma.docflow;
 
 import pl.com.bottega.qma.docflow.commands.*;
 
+import javax.transaction.Transactional;
+
+@Transactional
 public class DocumentFlowProcess {
 
   private final DocumentRepository documentRepository;
@@ -20,7 +23,9 @@ public class DocumentFlowProcess {
   }
 
   public void edit(EditDocumentCommand cmd) {
-
+    Document document = documentRepository.get(cmd.documentNumber);
+    document.edit(cmd);
+    documentRepository.save(document);
   }
 
   public void verify(VerifyDocumentCommand cmd) {
