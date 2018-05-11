@@ -9,10 +9,7 @@ import pl.com.bottega.qma.docflow.commands.PublishDocumentCommand;
 import pl.com.bottega.qma.docflow.commands.VerifyDocumentCommand;
 import pl.com.bottega.qma.docflow.events.*;
 
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Arrays;
 
 @Entity
@@ -28,6 +25,9 @@ public class Document {
   private DocumentStatus documentStatus;
 
   private boolean contentDefined, titleDefined;
+
+  @Version
+  private Long version;
 
   private Document() {
   }
@@ -76,6 +76,9 @@ public class Document {
       throw new InvalidDocumentOperation();
   }
 
+  public void smartEdit(EditDocumentCommand cmd) {
+
+  }
 }
 
 enum DocumentStatus {
