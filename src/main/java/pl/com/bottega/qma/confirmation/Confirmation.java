@@ -44,6 +44,7 @@ public class Confirmation {
     if(confirmedAt != null)
       return;
     confirmedAt = Instant.now();
+    managerId = cmd.managerId;
     eventPublisher.publish(new DocumentConfirmedEvent(id.documentNumber, id.employeeId, cmd.managerId));
   }
 

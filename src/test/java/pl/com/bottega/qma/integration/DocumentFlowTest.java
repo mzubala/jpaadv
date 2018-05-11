@@ -5,16 +5,18 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import pl.com.bottega.qma.catalog.DocumentCatalog;
+import pl.com.bottega.qma.catalog.DocumentDetails;
 import pl.com.bottega.qma.docflow.Document;
 import pl.com.bottega.qma.docflow.DocumentFlowProcess;
 import pl.com.bottega.qma.docflow.DocumentRepository;
 import pl.com.bottega.qma.docflow.commands.*;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 @SpringBootTest
@@ -25,7 +27,7 @@ public class DocumentFlowTest {
   private DocumentFlowProcess documentFlowProcess;
 
   @Autowired
-  private DocumentRepository documentRepository;
+  private DocumentCatalog documentCatalog;
 
   @Test
   public void createsDocument() {
@@ -37,8 +39,10 @@ public class DocumentFlowTest {
     String nr = documentFlowProcess.create(create);
 
     //then
-    Document doc = documentRepository.get(nr);
-    assertTrue(doc != null);
+    DocumentDetails documentDetails = documentCatalog.get(nr);
+    assertEquals(nr, documentDetails.number);
+    assertEquals("DRAFT", documentDetails.status);
+    assertEquals(new Long(1L), documentDetails.creatorId);
   }
 
   @Test
