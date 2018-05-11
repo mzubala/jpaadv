@@ -1,10 +1,13 @@
 package pl.com.bottega.qma.catalog;
 
+import org.hibernate.CacheMode;
+import org.hibernate.annotations.QueryHints;
 import org.springframework.stereotype.Component;
 import pl.com.bottega.qma.docflow.DocumentNotFoundException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import javax.persistence.QueryHint;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -48,6 +51,8 @@ public class DocumentCatalog {
     }
     criteriaQuery.where(predicate);
     Query q = entityManager.createQuery(criteriaQuery);
+    q.setHint("javax.persistence.cache.retrieveMode", "USE");
+    q.setHint("javax.persistence.cache.storeMode", "USE");
     List<DocumentBasicDetails> result = q.getResultList();
     return new DocumentSearchResults(result, 1, result.size(), result.size());
   }

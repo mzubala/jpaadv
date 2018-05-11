@@ -1,5 +1,6 @@
 package pl.com.bottega.qma.integration;
 
+import org.hibernate.SessionFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,7 +15,9 @@ import pl.com.bottega.qma.catalog.SearchDocumentsQuery;
 
 import javax.persistence.EntityManager;
 
+import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -59,13 +62,25 @@ public class DocumentCatalogTest {
 
   @Test
   public void searchesDocuments() {
+    SessionFactory sessionFactory = entityManager.getEntityManagerFactory().unwrap(SessionFactory.class);
+    sessionFactory.getStatistics().setStatisticsEnabled(true);
     SearchDocumentsQuery searchDocumentsQuery = new SearchDocumentsQuery();
     searchDocumentsQuery.query = "al";
 
     DocumentSearchResults res = catalog.search(searchDocumentsQuery);
-
+    res = catalog.search(searchDocumentsQuery);
     assertEquals(2, res.resultsCount);
     assertEquals(2, res.results.size());
+    assertEquals(1, sessionFactory.getStatistics().getQueryCacheHitCount());
+  }
+
+  @Test
+  public void cachesDocuments() {
+    SessionFactory sessionFactory = entityManager.getEntityManagerFactory().unwrap(SessionFactory.class);
+    sessionFactory.getStatistics().setStatisticsEnabled(true);
+    DocumentDetails dd = catalog.get("1");
+    dd = catalog.get("1");
+    assertTrue(sessionFactory.getStatistics().getSecondLevelCacheHitCount() >= 1);
   }
 
 }
