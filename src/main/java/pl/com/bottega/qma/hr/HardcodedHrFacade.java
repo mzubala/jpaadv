@@ -1,11 +1,8 @@
 package pl.com.bottega.qma.hr;
 
-import org.springframework.stereotype.Component;
-
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Component
 public class HardcodedHrFacade implements HrFacade {
 
   private final Map<String, Set<Long>> employees = new HashMap<>();

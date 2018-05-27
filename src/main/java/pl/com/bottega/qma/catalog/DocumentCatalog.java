@@ -1,20 +1,15 @@
 package pl.com.bottega.qma.catalog;
 
-import org.hibernate.CacheMode;
-import org.hibernate.annotations.QueryHints;
-import org.springframework.stereotype.Component;
 import pl.com.bottega.qma.docflow.DocumentNotFoundException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import javax.persistence.QueryHint;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.List;
 
-@Component
 public class DocumentCatalog {
 
   private final EntityManager entityManager;

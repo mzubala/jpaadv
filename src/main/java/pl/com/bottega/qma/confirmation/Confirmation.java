@@ -1,10 +1,7 @@
 package pl.com.bottega.qma.confirmation;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import pl.com.bottega.qma.confirmation.commands.ConfirmDocumentCommand;
 import pl.com.bottega.qma.confirmation.commands.ConfirmDocumentOnBehalfCommand;
-import pl.com.bottega.qma.confirmation.events.DocumentConfirmedEvent;
-import pl.com.bottega.qma.core.events.EventPublisher;
 
 import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
@@ -25,19 +22,14 @@ public class Confirmation {
 
   private Confirmation() {}
 
-  @Autowired
-  private transient EventPublisher eventPublisher;
-
-  public Confirmation(String documentNumber, Long employeeId, EventPublisher eventPublisher) {
+  public Confirmation(String documentNumber, Long employeeId) {
     this.id = new ConfirmationId(documentNumber, employeeId);
-    this.eventPublisher = eventPublisher;
   }
 
   public void confirm(ConfirmDocumentCommand cmd) {
     if(confirmedAt != null)
       return;
     confirmedAt = Instant.now();
-    eventPublisher.publish(new DocumentConfirmedEvent(id.documentNumber, id.employeeId));
   }
 
   public void confirmOnBehalf(ConfirmDocumentOnBehalfCommand cmd) {
@@ -45,7 +37,6 @@ public class Confirmation {
       return;
     confirmedAt = Instant.now();
     managerId = cmd.managerId;
-    eventPublisher.publish(new DocumentConfirmedEvent(id.documentNumber, id.employeeId, cmd.managerId));
   }
 
 
