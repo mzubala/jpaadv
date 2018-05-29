@@ -2,6 +2,9 @@ package pl.com.bottega.qma.docflow;
 
 import pl.com.bottega.qma.docflow.commands.*;
 
+import javax.transaction.Transactional;
+
+@Transactional
 public class DocumentFlowProcess {
 
   private final DocumentRepository documentRepository;
