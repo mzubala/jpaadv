@@ -6,7 +6,7 @@ public class DocumentTitleChangedEvent implements Event {
 
   public String documentNumber;
   public String newTitle;
-  private Long editorId;
+  public Long editorId;
 
   public DocumentTitleChangedEvent(String documentNumber, String newTitle, Long editorId) {
     this.documentNumber = documentNumber;

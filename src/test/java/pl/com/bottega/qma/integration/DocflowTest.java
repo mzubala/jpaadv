@@ -4,61 +4,37 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.stereotype.Component;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.support.TransactionTemplate;
-import pl.com.bottega.qma.docflow.Document;
-import pl.com.bottega.qma.docflow.DocumentFlowProcess;
-import pl.com.bottega.qma.docflow.DocumentNotFoundException;
-import pl.com.bottega.qma.docflow.DocumentRepository;
-import pl.com.bottega.qma.docflow.commands.CreateDocumentCommand;
+import pl.com.bottega.qma.catalog.DocumentDetails;
 
-import javax.persistence.EntityManager;
-import javax.transaction.Transactional;
+import java.util.Map;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @RunWith(SpringRunner.class)
 public class DocflowTest {
 
   @Autowired
-  private DocumentRepository documentRepository;
-
-  @Autowired
-  private DocumentFlowProcess documentFlowProcess;
-
-  @Autowired
-  private TransactionTemplate tt;
-
-  @Autowired
-  private EntityManager entityManager;
+  private TestRestTemplate restTemplate;
 
   @Test
   public void createsDocument() {
-    CreateDocumentCommand cmd = new CreateDocumentCommand();
-    cmd.creatorId = 1L;
+    ResponseEntity<Map> postResponse = restTemplate.postForEntity("/documents", null, Map.class);
+    String number = (String) postResponse.getBody().get("number");
+    ResponseEntity<DocumentDetails> getResponse = restTemplate.getForEntity("/documents/{number}", DocumentDetails.class, number);
+    DocumentDetails documentDetails = getResponse.getBody();
 
-    String nr = documentFlowProcess.create(cmd);
 
-    assertThat(documentRepository.get(nr)).isNotNull();
+    assertThat(postResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+    assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+    assertThat(documentDetails.number).isEqualTo(number);
+    assertThat(documentDetails.status).isEqualTo("DRAFT");
+    assertThat(documentDetails.creatorId).isEqualTo(1L);
   }
 
-  @Test
-  public void documentNumberMustBeUnique() {
-    Document document = new Document("11", 1L);
-    tt.execute((c) -> {
-      entityManager.persist(document);
-      return null;
-    });
 
-    assertThatThrownBy(() -> {
-      tt.execute((c) -> {
-        documentRepository.save(document);
-        return null;
-      });
-    }).isInstanceOf(DataIntegrityViolationException.class);
-  }
 }
