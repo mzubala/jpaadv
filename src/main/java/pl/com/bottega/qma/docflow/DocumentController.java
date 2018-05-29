@@ -1,5 +1,6 @@
 package pl.com.bottega.qma.docflow;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import pl.com.bottega.qma.docflow.commands.*;
 
@@ -55,6 +56,16 @@ public class DocumentController {
     cmd.archiverId = 1L;
     cmd.documentNumber = number;
     documentFlowProcess.archive(cmd);
+  }
+
+  @ExceptionHandler(DocumentNotFoundException.class)
+  @ResponseStatus(HttpStatus.NOT_FOUND)
+  public void handleDocumentNotFound() {
+  }
+
+  @ExceptionHandler(InvalidDocumentOperation.class)
+  @ResponseStatus(HttpStatus.PRECONDITION_FAILED)
+  public void handleInvalidDocumentOp() {
   }
 
 }
