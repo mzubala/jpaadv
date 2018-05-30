@@ -6,7 +6,6 @@ import javax.validation.constraints.NotNull;
 public class CreateDocumentCommand {
 
   @NotNull
-  @Min(10)
   public Long creatorId;
 
 }

@@ -3,7 +3,6 @@ package pl.com.bottega.qma.core.validation;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.stereotype.Component;
-import pl.com.bottega.qma.core.validation.InvalidCommandException;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
