@@ -1,11 +1,13 @@
 package pl.com.bottega.qma.docflow;
 
+import pl.com.bottega.qma.core.validation.Validate;
 import pl.com.bottega.qma.core.events.EventPublisher;
 import pl.com.bottega.qma.docflow.commands.*;
 
 import javax.transaction.Transactional;
 
 @Transactional
+@Validate
 public class DocumentFlowProcess {
 
   private final DocumentRepository documentRepository;
@@ -15,7 +17,7 @@ public class DocumentFlowProcess {
   public DocumentFlowProcess(DocumentRepository documentRepository,
                              NumberGenerator numberGenerator,
                              EventPublisher eventPublisher
-                             ) {
+  ) {
     this.documentRepository = documentRepository;
     this.numberGenerator = numberGenerator;
     this.eventPublisher = eventPublisher;

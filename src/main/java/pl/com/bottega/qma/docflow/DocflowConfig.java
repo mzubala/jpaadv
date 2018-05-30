@@ -1,5 +1,7 @@
 package pl.com.bottega.qma.docflow;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,8 +24,15 @@ public class DocflowConfig {
   }
 
   @Bean
-  public NumberGenerator numberGenerator() {
-    return () -> UUID.randomUUID().toString();
+  @ConditionalOnProperty(name = "qma.qualitySystem", havingValue = "ISO")
+  public NumberGenerator isoNumberGenerator() {
+    return new IsoNumberGenerator();
+  }
+
+  @Bean
+  @ConditionalOnProperty(name = "qma.qualitySystem", havingValue = "QEP")
+  public NumberGenerator qepNumberGenerator() {
+    return new QepNumberGenerator();
   }
 
   @Bean

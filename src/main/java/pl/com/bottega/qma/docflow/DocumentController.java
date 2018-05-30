@@ -1,11 +1,15 @@
 package pl.com.bottega.qma.docflow;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.com.bottega.qma.core.validation.InvalidCommandException;
 import pl.com.bottega.qma.docflow.commands.*;
 
+import javax.validation.ConstraintViolation;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/documents")
@@ -56,16 +60,6 @@ public class DocumentController {
     cmd.archiverId = 1L;
     cmd.documentNumber = number;
     documentFlowProcess.archive(cmd);
-  }
-
-  @ExceptionHandler(DocumentNotFoundException.class)
-  @ResponseStatus(HttpStatus.NOT_FOUND)
-  public void handleDocumentNotFound() {
-  }
-
-  @ExceptionHandler(InvalidDocumentOperation.class)
-  @ResponseStatus(HttpStatus.PRECONDITION_FAILED)
-  public void handleInvalidDocumentOp() {
   }
 
 }
